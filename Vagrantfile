@@ -4,15 +4,16 @@
 box_name    = "newfuture/ubuntu"
 node_folder = "./node/"#设置http://localhost/根目录,后端工作目录,与虚拟机同步共享（如D:/YunYinService/）
 web_folder  = "./web/"#设置http://front.localhost/根目录,前端开发工作目录(同上)
-web_port    = 80  #web端口，如果主机映射端口被占用换做其他
+web_port    = 8080  #web端口，如果主机映射端口被占用换做其他
 node_port   = 8888  #首次启动自动下载配置最新代码
 vm_memory   = 512   #为虚拟机分配内存，可根据本机增大如1024
+check_update= false #是否检查更新
 show_window = false #开机后是否显示窗口,如果要打开改为 true
 
 #一下是具体配置，#号为注释内容
 Vagrant.configure(2) do |config|
   config.vm.box = box_name
-
+  config.vm.box_check_update=check_update
   ### 网络配置 ###
   config.vm.network "forwarded_port", guest: 80, host: web_port
   config.vm.network "forwarded_port", guest: node_port, host: node_port
@@ -26,7 +27,7 @@ Vagrant.configure(2) do |config|
     config.vm.synced_folder web_folder, "/var/www/html/"  #web测试根目录
   end
   if !node_folder.empty?
-    config.vm.synced_folder node_folder, "/vagrant/node/" #node服务
+    config.vm.synced_folder node_folder, "/home/vagrant/node/" #node服务
   end
 
   ### 虚拟机配置 ####
@@ -35,4 +36,11 @@ Vagrant.configure(2) do |config|
     vb.gui = show_window
     vb.memory = vm_memory
   end
+
+  config.vm.post_up_message=<<-msg
+  服务器已启动
+  node根目录在~/node/与本地#{node_folder}同步,node可用端口#{node_port}
+  web测试服务器与本地#{web_folder}同步,测试服务端口#{web_port},
+  ssh地址127.0.0.1端口2222用户名vagrant密码vagrant
+  msg
  end
