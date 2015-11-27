@@ -1,0 +1,17 @@
+{
+  "name": "nodejs",
+  "version": "0.0.0",
+  "description": "node代码根目录",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "socket.io": "~1.3.7"
+  },
+  "dependencies": {
+    "socket.io": "^1.3.7"
+  }
+}
