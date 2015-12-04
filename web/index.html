@@ -1,22 +1,99 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<title>weboffloading-web-index</title>
 </head>
 
-	<script src="http://cdn.socket.io/socket.io-1.3.7.js"></script>
+	<script src="//cdn.bootcss.com/jquery/2.1.2/jquery.min.js"></script>
+
 	<script>
-	  window.onload = function(){
-	  	var socket = io('http://localhost:8888');
-	  	socket.on('news', function (data) {
-	  	  console.log(data);
-	  	  socket.emit('my other event', { my: 'data' });
-	  	});
-	  }
+		window.onload = function(){
+		var create = $("#connect-create")
+		var close = $("#connect-close")
+		var close = $("#connect-close")
+		var on = $("#connect-on")
+
+		var createBtn = $("#btn-create")
+		var closeBtn = $("#btn-close")
+		var post = $("#post")
+		
+
+		createBtn.click(function(){
+			var  wsServer = 'ws://localhost:8888'; 
+			var  websocket = new WebSocket(wsServer);
+			websocket.onopen = function (evt) { onOpen(evt) }; 
+			websocket.onclose = function (evt) { onClose(evt) }; 
+			websocket.onmessage = function (evt) { onMessage(evt) }; 
+			websocket.onerror = function (evt) { onError(evt) }; 
+
+			function onOpen(evt) { 
+
+				console.log("Connected to WebSocket server."); 
+				create.text("Success connected to WebSocket server...");
+				var message = 'hello server';
+				var option = {
+					type: "content",
+					content: "text"
+				};
+				var msg = JSON.stringify(option);
+				websocket.send(msg);
+
+				post.click(function(){
+					var text = $("#connect-post").val();
+					var url = {
+						type: "url",
+						url: text
+					};
+					var msg2 = JSON.stringify(url);
+					websocket.send(msg2);
+				});
+
+			} 
+			function onClose(evt) { 
+				console.log("Disconnected"); 
+				close.text("Disconnected")
+			} 
+			function onMessage(evt) {
+				var text = on.text() + '>>>>>>>'; 
+				text += ( evt.data )
+				on.text(text)
+				console.log('Retrieved data from server: ' + evt.data); 
+			} 
+			function onError(evt) { 
+				console.log('Error occured: ' + evt.data); 
+			};
+
+				
+		})
+
+		/*var socket = io('http://localhost:8888');
+		socket.on('news', function (data) {
+		  console.log(data);
+		  socket.emit('my other event', { my: 'data' });
+		});*/
+		}
 	</script>
-	<h1>socket测试</h1>
 <body>
+	
+	<h1>WorkerOffloading</h1>
+	<button id="btn-create">建立连接</button>
+	<div id="connect-create" style="height:100px;background-color:pink">
+		
+	</div>
+	<button id="btn-close">断开连接</button>
+	<div id="connect-close" style="height:100px;background-color:pink">
+		
+	</div>
+	<button>On</button>
+	<div id="connect-on" style="height:100px;background-color:pink">
+		
+	</div>
+
+	<input type="text" id="connect-post">
+	<button id="post">Post</button>
+	
+	
 	
 </body>
 </html>
