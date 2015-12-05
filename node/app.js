@@ -1,13 +1,8 @@
 
-
-//原生ws：
-
-var http = require('http');
 var fs = require('fs');
 var http = require('http');
 var https = require('https');
 var download = require('./down.js')
-//var Worker = require('./lib/node-worker-master/lib/worker');
 
 
 var app = http.createServer().listen( 8888 );
@@ -16,7 +11,7 @@ wss = new WebSocketServer( { server : app } );
 
 wss.on('connection', function( ws ) {
     console.log('connection successful!');
-    ws.send('hello cleient');
+    ws.send('hello client!');
 
     ws.on('message', function( data, flags ) {
 
@@ -27,7 +22,7 @@ wss.on('connection', function( ws ) {
 
             download(jsonObj.url, function(file_name){
                 ws.send("Success download " + file_name);
-                var worker = new Worker('./download/' + file_name);
+                var worker = new Worker('./temp/' + file_name);
             });          
 
         }

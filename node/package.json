@@ -1,17 +1,27 @@
 {
-  "name": "nodejs",
-  "version": "0.0.0",
-  "description": "node代码根目录",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "BSD-2-Clause",
-  "devDependencies": {
-    "socket.io": "~1.3.7"
-  },
+  "name": "webworker-offloading",
+  "version": "0.0.1",
+  "description": "offlod webworker from browser to server",
+  "main": "app.js",
   "dependencies": {
-    "socket.io": "^1.3.7"
+    "ws": "~0.8.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "w": "supervisor app.js",
+    "backgroud":"nohup supervisor app.js > log.txt 2>&1 &"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NewFuture/WorkerOffloading.git"
+  },
+  "keywords": [
+    "webworker",
+    "offloading"
+  ],
+  "author": "NewFuture Xu-Haocong Zhao-Wenjian",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NewFuture/WorkerOffloading/issues"
   }
 }

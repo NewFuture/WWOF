@@ -6,7 +6,6 @@ var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;  
 
 module.exports = function(file_url, callback){
-    
       
     // App variables  
     //var file_url = 'http://apps.bdimg.com/libs/accounting.js/0.3.2/accounting.min.js';  
