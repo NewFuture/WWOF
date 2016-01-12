@@ -9,31 +9,30 @@ var app = http.createServer().listen( 8888 );
 var WebSocketServer = require('ws').Server,
 wss = new WebSocketServer( { server : app } );
 
+var file_downloaded = false;
+
 wss.on('connection', function( ws ) {
     console.log('connection successful!');
     ws.send('hello client!');
 
     ws.on('message', function( data, flags ) {
 
-        var jsonObj = JSON.parse(data);
-        console.log(jsonObj);
+      if(data.substr(-3) == '.js' && !file_downloaded){
 
-        if( jsonObj.type == 'url' ){
+        download(data, function(file_name){
+          //ws.send("Success download " + file_name);
+          file_downloaded = true;
+          //var worker = new Worker('./temp/' + file_name);
+        });          
 
-            download(jsonObj.url, function(file_name){
-                ws.send("Success download " + file_name);
-                var worker = new Worker('./temp/' + file_name);
-            });          
-
-        }
+      }
         
-        //do something here
-        
+      //do something here
+      console.log(data);
     });
     ws.on('close', function() {
-        console.log('stopping client');
+      console.log('stopping client');
     });
-
 });
 
 

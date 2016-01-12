@@ -92,8 +92,15 @@
 
 	<input type="text" id="connect-post">
 	<button id="post">Post</button>
-	
-	
-	
+	<script src="offworker.js"></script>
+	<script>
+		var worker = new offWorker('https://raw.githubusercontent.com/lodash/lodash/3.10.1/lodash.js');
+		worker.onmessage = function(event){
+		  console.log(event.data);
+		}
+		worker.postMessage('hello from client');
+		worker.close();
+		worker.postMessage('hello world'); // 失效
+	</script>
 </body>
 </html>
