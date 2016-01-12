@@ -33,8 +33,8 @@ Vagrant.configure(2) do |config|
   end
   if !node_folder.empty?
     config.vm.synced_folder node_folder, "/home/vagrant/node/" #node服务
-    config.vm.provision "packages",type: "shell", inline: "cd ~/node;npm install"#首次导入自动安装依赖包
-    config.vm.provision "watch",type: "shell",inline: "cd ~/node;npm run backgroud",run: "always",privileged:false #自动检测变化
+    config.vm.provision "packages",type: "shell", inline: "cd /home/vagrant/node/;npm install"#首次导入自动安装依赖包
+    config.vm.provision "watch",type: "shell",inline: "cd /home/vagrant/node/;npm run backgroud",run: "always",privileged:false #自动检测变化
   end
   ### 虚拟机配置 ###
   config.vm.provider "virtualbox" do |vb|  # virtualbox
