@@ -1,7 +1,7 @@
 var http = require('http');
 var download = require('./down.js')
 var Worker = require('webworker-threads').Worker;
-var WebSocketServer = require('ws').Server,
+var WebSocketServer = require('ws').Server;
 
 function getFullURL(url)//获取完整的url
 {
