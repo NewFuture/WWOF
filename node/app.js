@@ -1,6 +1,7 @@
 var http = require('http');
 var download = require('./down.js')
 var Worker = require('webworker-threads').Worker;
+var WebSocketServer = require('ws').Server,
 
 function getFullURL(url)//获取完整的url
 {
@@ -10,9 +11,9 @@ function getFullURL(url)//获取完整的url
 console.log(Date.now()+" start");
 
 var app = http.createServer().listen( 8888 );
-var WebSocketServer = require('ws').Server,
+
 //服务器上的socket
-wss = new WebSocketServer( { server : app } );
+var wss = new WebSocketServer( { server : app } );
 
 wss.on('connection', function( ws ) {
   

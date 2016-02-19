@@ -9,7 +9,7 @@ module.DOWNLOAD_DIR='./download/';
 module.exports = function(file_url, callback){
     //uri
     var uri=url.parse(file_url);
-    console.log(uri); 
+    // console.log(uri); 
 
     var file_name =module.DOWNLOAD_DIR + uri.pathname.split('/').pop();  
     var file = fs.createWriteStream(file_name);  
