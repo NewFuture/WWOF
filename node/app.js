@@ -1,66 +1,68 @@
-
-var fs = require('fs');
 var http = require('http');
-var https = require('https');
 var download = require('./down.js')
+var Worker = require('webworker-threads').Worker;
 
+function getFullURL(url)//获取完整的url
+{
+  return url;
+}
+
+console.log(Date.now()+" start");
 
 var app = http.createServer().listen( 8888 );
 var WebSocketServer = require('ws').Server,
+//服务器上的socket
 wss = new WebSocketServer( { server : app } );
 
-var file_downloaded = false;
-
 wss.on('connection', function( ws ) {
-    console.log('connection successful!');
-    ws.send('hello client!');
+  
+ console.log('connection successful!');
+  
+  var worker=null;//worker
 
-    ws.on('message', function( data, flags ) {
+  ws.onmessage=function(ent){
+    var info =JSON.parse(ent.data);
+    switch(info.cmd)
+    {
+      case 2://postmessage
+        if(worker)
+        {
+          worker.postMessage(info.data);
+          console.log('worker receive :'+info.data);
+        }else{
+          //worker未创建！
 
-      if(data.substr(-3) == '.js' && !file_downloaded){
+        }
+        break;
+      case 1://创建worker
+          url= getFullURL(info.data);//文件地址
+          console.log('worker create :'+url);
+          download(url, function(file_name){
+           worker=new Worker(file_name);
 
-        download(data, function(file_name){
-          //ws.send("Success download " + file_name);
-          file_downloaded = true;
-          //var worker = new Worker('./temp/' + file_name);
-        });          
+            worker.onmessage=function(ent) {//worker响应数据返回客户端
+              ret={'status':1,'data':ent.data};
+              ws.send(JSON.stringify(ret));
+            };
+           });
+        break;
+      case -1://关闭worker
+        worker.terminate();
+        console.log('worker close');
+        worker=null;
+        break;
+      default://未知情况，异常；
+      ;
+    }
+  };
 
-      }
-        
-      //do something here
-      console.log(data);
-    });
-    ws.on('close', function() {
+//socket关闭
+  ws.on('close', function() {
       console.log('stopping client');
-    });
+      if(worker)//关闭worker
+      {
+        worker.terminate();
+        worker=null;
+      }
+   });
 });
-
-
-
-
-
-/*var app = require('http').createServer(handler)
-var io = require('socket.io')(app);
-var fs = require('fs');
-
-app.listen(8888);
-
-function handler (req, res) {
-
-  fs.readFile(__dirname + '/index.html',
-  function (err, data) {
-	if (err) {
-	  res.writeHead(500);
-	  return res.end('Error loading index.html');
-	}
-	res.writeHead(200);
-	res.end(data);
-  });
-}
-
-io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-	console.log(data);
-  });
-});*/

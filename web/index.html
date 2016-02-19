@@ -33,8 +33,8 @@
 				create.text("Success connected to WebSocket server...");
 				var message = 'hello server';
 				var option = {
-					type: "content",
-					content: "text"
+					cmd: 1,
+					data: $("#connect-post").val()
 				};
 				var msg = JSON.stringify(option);
 				websocket.send(msg);
@@ -42,8 +42,8 @@
 				post.click(function(){
 					var text = $("#connect-post").val();
 					var url = {
-						type: "url",
-						url: text
+						cmd: 2,
+						data: text
 					};
 					var msg2 = JSON.stringify(url);
 					websocket.send(msg2);
@@ -93,7 +93,7 @@
 	<input type="text" id="connect-post">
 	<button id="post">Post</button>
 	<script src="offworker.js"></script>
-	<script>
+<!-- 	<script>
 		var worker = new offWorker('https://raw.githubusercontent.com/lodash/lodash/3.10.1/lodash.js');
 		worker.onmessage = function(event){
 		  console.log(event.data);
@@ -101,6 +101,6 @@
 		worker.postMessage('hello from client');
 		worker.close();
 		worker.postMessage('hello world'); // 失效
-	</script>
+	</script> -->
 </body>
 </html>

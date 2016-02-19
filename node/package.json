@@ -4,12 +4,13 @@
   "description": "offlod webworker from browser to server",
   "main": "app.js",
   "dependencies": {
-    "ws": "~0.8.1"
+    "ws": "~0.8.1",
+    "webworker-threads": "~0.6.2"
   },
   "devDependencies": {},
   "scripts": {
     "w": "supervisor app.js",
-    "backgroud":"nohup supervisor app.js > log.txt 2>&1 &"
+    "backgroud": "nohup supervisor app.js > log.txt 2>&1 &"
   },
   "repository": {
     "type": "git",
