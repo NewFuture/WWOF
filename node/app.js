@@ -16,9 +16,9 @@ var app = http.createServer().listen( 8888 );
 var wss = new WebSocketServer( { server : app } );
 
 wss.on('connection', function( ws ) {
-  
+
  console.log('connection successful!');
-  
+
   var worker=null;//worker
 
   ws.onmessage=function(ent){
@@ -40,9 +40,10 @@ wss.on('connection', function( ws ) {
           console.log('worker create :'+url);
           download(url, function(file_name){
            worker=new Worker(file_name);
-
+            ws.send(JSON.stringify({'status': 1, 'data': 'ready'})); // worker 文件下载完毕
             worker.onmessage=function(ent) {//worker响应数据返回客户端
-              ret={'status':1,'data':ent.data};
+              ret={'status':2,'data':ent.data};
+              console.log(ent.data);
               ws.send(JSON.stringify(ret));
             };
            });

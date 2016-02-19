@@ -41,44 +41,62 @@
   var WSCLOSED = false;
 
 	var offWorker = function(url, server) {
-		var ws = offWorker.prototype._ws = new WebSocket(server || offWorker.DEFAULTSERVER);
+		var ws = this._ws = new WebSocket(server || offWorker.DEFAULTSERVER);
 
 		ws.onopen = function() {
-			ws.send(url);
+
+      var option = {
+        cmd: 1,
+        data: url
+      };
+
+			ws.send(JSON.stringify(option));
 		}
 
 		ws.onmessage = function(event) {
-			if (typeof this.onmessage != 'function') {
+      if (JSON.parse(event.data).status == 1) {
+        this.isReady = true;
+      }
+			if (typeof this.onmessage != 'function' || !this.isReady) {
 				return;
-			} else {
-				this.onmessage(event);
+			} else if(JSON.parse(event.data).status == 2) {
+				this.onmessage(JSON.parse(event.data));
 			}
 		}.bind(this);
+
+    ws.onerror = function(event) {
+      if (typeof this.onerror != 'function' || !this.isReady) {
+        return;
+      } else {
+        this.onerror(event);
+      }
+    }
 	}
 
 	offWorker.prototype.postMessage = function(value) {
-		if (this._ws.readyState == WSREADYSTATE.CONNECTING) {
+		if (!this.isReady) {
 			setTimeout(function() {
 				this.postMessage(value);
 			}.bind(this));
 		} else {
 			if (WSCLOSED) {
-				this._ws.close();
 				return;
 			} else {
-				this._ws.send(value);
+				this._ws.send(JSON.stringify({cmd: 2, data: value}));
 			}
 		}
 	}
 
 	offWorker.prototype.close = function() {
-		if (this._ws.readyState == WSREADYSTATE.CONNECTING) {
+		if (!this.isReady) {
 			setTimeout(function() {
 				this.close();
 			}.bind(this));
 		} else {
 			WSCLOSED = true;
-		}	
+      this.isReady = false;
+      this._ws.close();
+		}
 	}
 
 	offWorker.DEFAULTSERVER = 'ws://localhost:8888';
