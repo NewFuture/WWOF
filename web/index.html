@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
@@ -17,19 +17,19 @@
 		var createBtn = $("#btn-create")
 		var closeBtn = $("#btn-close")
 		var post = $("#post")
-		
+
 
 		createBtn.click(function(){
-			var  wsServer = 'ws://localhost:8888'; 
+			var  wsServer = 'ws://localhost:8888';
 			var  websocket = new WebSocket(wsServer);
-			websocket.onopen = function (evt) { onOpen(evt) }; 
-			websocket.onclose = function (evt) { onClose(evt) }; 
-			websocket.onmessage = function (evt) { onMessage(evt) }; 
-			websocket.onerror = function (evt) { onError(evt) }; 
+			websocket.onopen = function (evt) { onOpen(evt) };
+			websocket.onclose = function (evt) { onClose(evt) };
+			websocket.onmessage = function (evt) { onMessage(evt) };
+			websocket.onerror = function (evt) { onError(evt) };
 
-			function onOpen(evt) { 
+			function onOpen(evt) {
 
-				console.log("Connected to WebSocket server."); 
+				console.log("Connected to WebSocket server.");
 				create.text("Success connected to WebSocket server...");
 				var message = 'hello server';
 				var option = {
@@ -49,22 +49,22 @@
 					websocket.send(msg2);
 				});
 
-			} 
-			function onClose(evt) { 
-				console.log("Disconnected"); 
+			}
+			function onClose(evt) {
+				console.log("Disconnected");
 				close.text("Disconnected")
-			} 
+			}
 			function onMessage(evt) {
-				var text = on.text() + '>>>>>>>'; 
+				var text = on.text() + '>>>>>>>';
 				text += ( evt.data )
 				on.text(text)
-				console.log('Retrieved data from server: ' + evt.data); 
-			} 
-			function onError(evt) { 
-				console.log('Error occured: ' + evt.data); 
+				console.log('Retrieved data from server: ' + evt.data);
+			}
+			function onError(evt) {
+				console.log('Error occured: ' + evt.data);
 			};
 
-				
+
 		})
 
 		/*var socket = io('http://localhost:8888');
@@ -75,32 +75,32 @@
 		}
 	</script>
 <body>
-	
+
 	<h1>WorkerOffloading</h1>
 	<button id="btn-create">建立连接</button>
 	<div id="connect-create" style="height:100px;background-color:pink">
-		
+
 	</div>
 	<button id="btn-close">断开连接</button>
 	<div id="connect-close" style="height:100px;background-color:pink">
-		
+
 	</div>
 	<button>On</button>
 	<div id="connect-on" style="height:100px;background-color:pink">
-		
+
 	</div>
 
 	<input type="text" id="connect-post">
 	<button id="post">Post</button>
 	<script src="offworker.js"></script>
-<!-- 	<script>
-		var worker = new offWorker('https://raw.githubusercontent.com/lodash/lodash/3.10.1/lodash.js');
-		worker.onmessage = function(event){
-		  console.log(event.data);
+	<script>
+		var worker = new offWorker('http://127.0.0.1/test/repeat.js');
+		worker.onmessage = function(data){
+		  console.log(data);
 		}
 		worker.postMessage('hello from client');
-		worker.close();
-		worker.postMessage('hello world'); // 失效
-	</script> -->
+    worker.close();
+    worker.postMessage('hello world'); // 失效
+	</script>
 </body>
 </html>
