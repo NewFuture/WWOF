@@ -94,12 +94,13 @@
 			}.bind(this));
 		} else {
 			WSCLOSED = true;
+      this._ws.send(JSON.stringify({cmd: -1, data: 'close'}));
       this.isReady = false;
       this._ws.close();
 		}
 	}
 
-	offWorker.DEFAULTSERVER = 'ws://localhost:8888';
+	offWorker.DEFAULTSERVER = 'ws://127.0.0.1:8888';
 
   // Some AMD build optimizers like r.js check for condition patterns like the following:
   if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {

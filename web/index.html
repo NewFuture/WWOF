@@ -3,11 +3,16 @@
 <head>
 	<meta charset="UTF-8">
 	<title>weboffloading-web-index</title>
+  <style>
+    #connect-info {
+      margin: 10px 0;
+    }
+  </style>
 </head>
 
-	<script src="//cdn.bootcss.com/jquery/2.1.2/jquery.min.js"></script>
-
-	<script>
+<!-- 	<script src="//cdn.bootcss.com/jquery/2.1.2/jquery.min.js"></script>
+ -->
+<!-- 	<script>
 		window.onload = function(){
 		var create = $("#connect-create")
 		var close = $("#connect-close")
@@ -74,33 +79,47 @@
 		});*/
 		}
 	</script>
-<body>
+ --><body>
 
 	<h1>WorkerOffloading</h1>
-	<button id="btn-create">建立连接</button>
-	<div id="connect-create" style="height:100px;background-color:pink">
-
-	</div>
-	<button id="btn-close">断开连接</button>
-	<div id="connect-close" style="height:100px;background-color:pink">
-
-	</div>
-	<button>On</button>
-	<div id="connect-on" style="height:100px;background-color:pink">
-
-	</div>
-
+  <input type="text" id="connect-url">
+	<button id="btn-create" onclick="init()">建立连接</button>
+  <button id="btn-close" onclick="terminate()">断开连接</button>
+	<div id="connect-info" style="height:300px;background-color:pink"></div>
 	<input type="text" id="connect-post">
-	<button id="post">Post</button>
+	<button id="post" onclick="post()">Post</button>
 	<script src="offworker.js"></script>
 	<script>
-		var worker = new offWorker('http://127.0.0.1/test/repeat.js');
-		worker.onmessage = function(data){
-		  console.log(data);
-		}
-		worker.postMessage('hello from client');
-    worker.close();
-    worker.postMessage('hello world'); // 失效
+
+    var worker = {};
+
+    function init() {
+      var url = document.querySelector('#connect-url').value;
+      worker = new offWorker(url);
+      worker.onmessage = function(event) {
+        appendMsg(event.data);
+      }
+    }
+
+    function appendMsg(txt) {
+      var elem = document.createElement('p');
+      elem.innerText = txt;
+      document.querySelector('#connect-info').appendChild(elem);
+    }
+
+    function post() {
+      var msg = document.querySelector('#connect-post').value;
+      if(msg && worker) {
+        worker.postMessage(msg);
+      }
+    }
+
+    function terminate() {
+      if(worker) {
+        worker.close();
+      }
+    }
+
 	</script>
 </body>
 </html>
