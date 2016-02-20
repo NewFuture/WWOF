@@ -2,105 +2,77 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>weboffloading-web-index</title>
-</head>
+	<title>Worker Offloading Test</title>
+  <style>
+    #connect-info {
+      margin: 10px 0;
+    }
+  </style>
+</head><body>
 
-	<script src="//cdn.bootcss.com/jquery/2.1.2/jquery.min.js"></script>
-
-	<script>
-		window.onload = function(){
-		var create = $("#connect-create")
-		var close = $("#connect-close")
-		var close = $("#connect-close")
-		var on = $("#connect-on")
-
-		var createBtn = $("#btn-create")
-		var closeBtn = $("#btn-close")
-		var post = $("#post")
-
-
-		createBtn.click(function(){
-			var  wsServer = 'ws://localhost:8888';
-			var  websocket = new WebSocket(wsServer);
-			websocket.onopen = function (evt) { onOpen(evt) };
-			websocket.onclose = function (evt) { onClose(evt) };
-			websocket.onmessage = function (evt) { onMessage(evt) };
-			websocket.onerror = function (evt) { onError(evt) };
-
-			function onOpen(evt) {
-
-				console.log("Connected to WebSocket server.");
-				create.text("Success connected to WebSocket server...");
-				var message = 'hello server';
-				var option = {
-					cmd: 1,
-					data: $("#connect-post").val()
-				};
-				var msg = JSON.stringify(option);
-				websocket.send(msg);
-
-				post.click(function(){
-					var text = $("#connect-post").val();
-					var url = {
-						cmd: 2,
-						data: text
-					};
-					var msg2 = JSON.stringify(url);
-					websocket.send(msg2);
-				});
-
-			}
-			function onClose(evt) {
-				console.log("Disconnected");
-				close.text("Disconnected")
-			}
-			function onMessage(evt) {
-				var text = on.text() + '>>>>>>>';
-				text += ( evt.data )
-				on.text(text)
-				console.log('Retrieved data from server: ' + evt.data);
-			}
-			function onError(evt) {
-				console.log('Error occured: ' + evt.data);
-			};
-
-
-		})
-
-		/*var socket = io('http://localhost:8888');
-		socket.on('news', function (data) {
-		  console.log(data);
-		  socket.emit('my other event', { my: 'data' });
-		});*/
-		}
-	</script>
-<body>
-
-	<h1>WorkerOffloading</h1>
-	<button id="btn-create">建立连接</button>
-	<div id="connect-create" style="height:100px;background-color:pink">
-
+	<h1>Worker Offloading Debug</h1>
+	<div style="border: solid 1px;">
+		<div>
+		Worker URL  <input type="text" id="connect-url" value="http://127.0.0.1/test/repeat.js">
 	</div>
-	<button id="btn-close">断开连接</button>
-	<div id="connect-close" style="height:100px;background-color:pink">
-
+	<div>
+		Offload Server<input type="text" id="worker-server" value="ws://127.0.0.1:8888">
 	</div>
-	<button>On</button>
-	<div id="connect-on" style="height:100px;background-color:pink">
-
+	<button id="btn-create" onclick="init()">建立连接</button>
+   <button id="btn-close" onclick="terminate()">断开连接</button>
 	</div>
 
-	<input type="text" id="connect-post">
-	<button id="post">Post</button>
+	 
+	
+   <div>
+   <h4>Post Message to the  offloading worker</h4>
+   		<input type="text" id="connect-post">
+		<button id="post" onclick="post()">postMessage</button>
+   </div>
+
+   <h4>响应数据</h4>
+	<div id="connect-info" style="min-height:500px;background-color:pink"></div>
 	<script src="offworker.js"></script>
 	<script>
-		var worker = new offWorker('http://127.0.0.1/test/repeat.js');
-		worker.onmessage = function(data){
-		  console.log(data);
-		}
-		worker.postMessage('hello from client');
-    worker.close();
-    worker.postMessage('hello world'); // 失效
+
+    var worker = {};
+
+    function init() {
+      var url = document.querySelector('#connect-url').value.trim();
+      var server=document.querySelector('#worker-server').value.trim()
+      document.querySelector('#connect-info').innerHTML="<b>worker启动</b>"
+      worker = new offWorker(url,server);
+      worker.onmessage = function(event) {
+        insertMsg(event.data);
+      }
+    }
+
+   function insertMsg(txt){
+	 var con=document.querySelector('#connect-info');
+ 	var newtxt="<div/>"+txt+"</div>"+con.innerHTML;
+	con.innerHTML=newtxt;
+   }
+
+    function appendMsg(txt) {
+      var elem = document.createElement('p');
+      elem.innerText = txt;
+      document.querySelector('#connect-info').appendChild(elem);
+    }
+
+    function post() {
+      var msg = document.querySelector('#connect-post').value;
+      if(msg && worker) {
+        worker.postMessage(msg);
+      }
+    }
+
+    function terminate() {
+      if(worker) {
+        worker.close();
+        document.querySelector('#connect-info').innerHTML="<b>已停止worker</b>";
+      }
+    }
+
 	</script>
 </body>
 </html>
