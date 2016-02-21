@@ -80,6 +80,7 @@ var Master = function(port) {
             ws.worker.postMessage(info.data);
           } else {
             //worker未创建！
+            console.log('post without worker');
             ws.post(ws.worker_status, 'worker is not available')
           }
           break;
