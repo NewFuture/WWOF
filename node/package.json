@@ -10,7 +10,7 @@
   "devDependencies": {},
   "scripts": {
     "w": "supervisor app.js",
-    "backgroud": "nohup supervisor app.js > log.txt 2>&1 &"
+    "backgroud": "nohup supervisor -i download app.js> log.txt 2>&1 &"
   },
   "repository": {
     "type": "git",
