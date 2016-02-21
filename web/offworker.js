@@ -50,6 +50,8 @@
         data: url
       };
 
+      WSCLOSED = false;
+
 			ws.send(JSON.stringify(option));
 		}
 
