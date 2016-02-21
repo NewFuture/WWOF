@@ -40,8 +40,17 @@
 
   var WSCLOSED = false;
 
+  function getAbsoluteUrl(url) {
+    var a = document.createElement('A');
+    a.href = url;  // 设置相对路径给Image, 此时会发送出请求
+    url = a.href;  // 此时相对路径已经变成绝对路径
+    return url;
+  }
+
 	var offWorker = function(url, server) {
 		var ws = this._ws = new WebSocket(server || offWorker.DEFAULTSERVER);
+
+    url = getAbsoluteUrl(url);
 
 		ws.onopen = function() {
 
@@ -110,7 +119,7 @@
     // errors in cases where lodash is loaded by a script tag and not intended
     // as an AMD module. See http://requirejs.org/docs/errors.html#mismatch for
     // more details.
-    root.offWorker = offWorker;
+    root.Worker = offWorker;
 
     // Define as an anonymous module so, through path mapping, it can be
     // referenced as the "underscore" module.
@@ -122,15 +131,15 @@
   else if (freeExports && freeModule) {
     // Export for Node.js or RingoJS.
     if (moduleExports) {
-      (freeModule.exports = offWorker).offWorker = offWorker;
+      (freeModule.exports = offWorker).Worker = offWorker;
     }
     // Export for Rhino with CommonJS support.
     else {
-      freeExports.offWorker = offWorker;
+      freeExports.Worker = offWorker;
     }
   }
   else {
     // Export for a browser or Rhino.
-    root.offWorker = offWorker;
+    root.Worker = offWorker;
   }
 }.call(this));

@@ -22,8 +22,8 @@
    <button id="btn-close" onclick="terminate()">断开连接</button>
 	</div>
 
-	 
-	
+
+
    <div>
    <h4>Post Message to the  offloading worker</h4>
    		<input type="text" id="connect-post">
@@ -41,17 +41,17 @@
       var url = document.querySelector('#connect-url').value.trim();
       var server=document.querySelector('#worker-server').value.trim()
       document.querySelector('#connect-info').innerHTML="<b>worker启动</b>"
-      worker = new offWorker(url,server);
+      worker = new Worker(url,server);
       worker.onmessage = function(event) {
         insertMsg(event.data);
       }
     }
 
-   function insertMsg(txt){
-	 var con=document.querySelector('#connect-info');
- 	var newtxt="<div/>"+txt+"</div>"+con.innerHTML;
-	con.innerHTML=newtxt;
-   }
+    function insertMsg(txt){
+      var con=document.querySelector('#connect-info');
+      var newtxt="<div/>"+txt+"</div>"+con.innerHTML;
+      con.innerHTML=newtxt;
+    }
 
     function appendMsg(txt) {
       var elem = document.createElement('p');
