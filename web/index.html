@@ -3,35 +3,38 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Worker Offloading Test</title>
-  <style>
-    #connect-info {
-      margin: 10px 0;
-    }
-  </style>
-</head><body>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div id="nav">
+        <div class="title">Worker&nbsp; Offloading&nbsp; Debug
+        </div>
+       
+    </div>
+    <div id="content">
+        <div id="create-conn">
+            <div>
+                Worker URL  <input type="text" id="connect-url" placeholder="worker url" value="http://127.0.0.1/test/repeat.js">
+            </div>
+            <div>
+                Offload Server<input type="text" placeholder="offload server url" id="worker-server" value="ws://127.0.0.1:8888">
+            </div>
+            <button id="btn-create" onclick="init()" class="btn btn-round-fill sunglow">建立连接</button>
+            <button id="btn-close" onclick="terminate()" class="btn">断开连接</button>
+        </div>
+        
+        <div id="postMsg">
+            <h4>Post Message to the  offloading worker</h4>
+            <input type="text" id="connect-post" placeholder="post message to remote server">
+            <button id="post" onclick="post()" class="btn">postMessage</button>
+        </div>
 
-	<h1>Worker Offloading Debug</h1>
-	<div style="border: solid 1px;">
-		<div>
-		Worker URL  <input type="text" id="connect-url" value="http://127.0.0.1/test/repeat.js">
-	</div>
-	<div>
-		Offload Server<input type="text" id="worker-server" value="ws://127.0.0.1:8888">
-	</div>
-	<button id="btn-create" onclick="init()">建立连接</button>
-   <button id="btn-close" onclick="terminate()">断开连接</button>
-	</div>
-
-
-
-   <div>
-   <h4>Post Message to the  offloading worker</h4>
-   		<input type="text" id="connect-post">
-		<button id="post" onclick="post()">postMessage</button>
-   </div>
-
-   <h4>响应数据</h4>
-	<div id="connect-info" style="min-height:500px;background-color:pink"></div>
+        <h4>响应数据</h4>
+        <div id="connect-info" style="min-height:500px;background-color:#f2f2f2;">
+            
+        </div>
+    </div>
+	
 	<script src="offworker.js"></script>
 	<script>
 
