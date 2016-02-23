@@ -30,7 +30,7 @@ var ServerWorker = function(file, websocket) {
 
   worker.onerror = function(data) {
     Master.liveWorker--;
-    websocket.post(-1, 'can not run this worker:' + data);
+    websocket.post(-1, data);
     websocket.worker_status = -1;
     console.log('[' + websocket.id + '] error');
   };

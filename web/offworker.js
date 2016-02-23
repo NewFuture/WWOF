@@ -50,6 +50,8 @@
 	var offWorker = function(url, server) {
 		var ws = this._ws = new WebSocket(server || offWorker.DEFAULTSERVER);
 
+    this.collector = [];
+
     url = getAbsoluteUrl(url);
 
 		ws.onopen = function() {
@@ -67,6 +69,7 @@
 		ws.onmessage = function(event) {
       if (JSON.parse(event.data).status == 1) {
         this.isReady = true;
+        this.postMessage();
       }
 			if (typeof this.onmessage != 'function' || !this.isReady) {
 				return;
@@ -86,24 +89,30 @@
 
 	offWorker.prototype.postMessage = function(value) {
 		if (!this.isReady) {
-			setTimeout(function() {
-				this.postMessage(value);
-			}.bind(this));
+			this.collector.push(value);
 		} else {
 			if (WSCLOSED) {
 				return;
 			} else {
-				this._ws.send(JSON.stringify({cmd: 2, data: value}));
+        if(this.collector.length) {
+          for (var i = 0; i < this.collector.length; i++) {
+            var prevData = this.collector[i];
+            this._ws.send(JSON.stringify({cmd: 2, data: prevData}));
+          }
+          this.collector = [];
+        }
+				value ? this._ws.send(JSON.stringify({cmd: 2, data: value})) : void(0);
 			}
 		}
 	}
 
-	offWorker.prototype.close = function() {
+	offWorker.prototype.terminate = function() {
 		if (!this.isReady) {
 			setTimeout(function() {
 				this.close();
 			}.bind(this));
 		} else {
+      this.postMessage();
 			WSCLOSED = true;
       this._ws.send(JSON.stringify({cmd: -1, data: 'close'}));
       this.isReady = false;
