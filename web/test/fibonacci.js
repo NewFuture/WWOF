@@ -1,9 +1,8 @@
  //fibonacci.js
  //计算斐波那契数列
- var fibonacci =function(n) {
-  return n <2? n : arguments.callee(n -1) + arguments.callee(n -2);
+ var fibonacci = function(n) {
+ 	return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2);
  };
- onmessage =function(event) {
-   var n = parseInt(event.data, 10);
-   postMessage(fibonacci(n));
-  };
+ onmessage = function(event) {
+ 	postMessage(fibonacci(event.data));
+ };
