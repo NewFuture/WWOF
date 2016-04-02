@@ -9,7 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "w": "supervisor app.js",
+    "w": "supervisor -i download app.js",
     "backgroud": "nohup supervisor -i download app.js> log.txt 2>&1 &"
   },
   "repository": {

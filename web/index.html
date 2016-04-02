@@ -1,102 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<title>Worker Offloading Debug</title>
+    <meta charset="UTF-8">
+    <title>Worker Offloading Debug</title>
     <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
     <div id="nav">
         <div class="title">Worker Offloading Debug
         </div>
-       
     </div>
     <div id="content">
         <div id="create-conn">
             <div>
-                Worker URL  <input type="text" id="connect-url" placeholder="worker url" value="./test/repeat.js">
+                Worker URL
+                <input type="text" id="connect-url" placeholder="worker url" value="./test/repeat.js">
             </div>
             <div>
-                Offload Server<input type="text" placeholder="offload server url" id="worker-server" value="ws://127.0.0.1:8888">
+                Offload Server
+                <input type="text" placeholder="offload server url" id="worker-server" value="ws://127.0.0.1:8888">
             </div>
             <button id="btn-create" onclick="init()" class="btn btn-round-fill sunglow">启动</button>
             <button id="btn-close" onclick="terminate()" class="btn">关闭</button>
         </div>
-        
         <div id="postMsg">
             <h4>Post Message to the  offloading worker</h4>
             <input type="text" id="connect-post" placeholder="post message to remote server" value="message">
             <button id="post" onclick="post()" class="btn">postMessage</button>
         </div>
-
         <h4>响应数据</h4>
-        <div id="connect-info" style="min-height:500px;background-color:#f2f2f2;">            
+        <div id="connect-info" style="min-height:500px;background-color:#f2f2f2;">
         </div>
     </div>
-	
-	<script src="offworker.js"></script>
-	<script>
+    <script src="offworker.js"></script>
+    <script>
     var worker = {};
+    var start, current;
 
-    function request(paras){ 
-        var url = location.href; 
-        var paraString = url.substring(url.indexOf("?")+1,url.length).split("&"); 
-        var paraObj = {} 
-        for (i=0; j=paraString[i]; i++){ 
-            paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf("=")+1,j.length); 
-        } 
-        var returnValue = paraObj[paras.toLowerCase()]; 
-        if(typeof(returnValue)=="undefined"){ 
-            return ""; 
-        }else{ 
-            return returnValue; 
-        } 
-    } 
-
-    function init() {
-      var url = document.querySelector('#connect-url').value.trim();
-      var server=document.querySelector('#worker-server').value.trim()
-      document.querySelector('#connect-info').innerHTML="<b>worker启动</b>"
-      worker = new Worker(url,server);
-      worker.onmessage = function(event) {
-        insertMsg(event.data);
-      }
+    function request(paras) {
+        var url = location.href;
+        var paraString = url.substring(url.indexOf("?") + 1, url.length).split("&");
+        var paraObj = {}
+        for (i = 0; j = paraString[i]; i++) {
+            paraObj[j.substring(0, j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf("=") + 1, j.length);
+        }
+        var returnValue = paraObj[paras.toLowerCase()];
+        if (typeof(returnValue) == "undefined") {
+            return "";
+        } else {
+            return returnValue;
+        }
     }
 
-    function insertMsg(txt){
-      var con=document.querySelector('#connect-info');
-      var newtxt="<div/>"+txt+"</div>"+con.innerHTML;
-      con.innerHTML=newtxt;
+    function init() {
+        var url = document.querySelector('#connect-url').value.trim();
+        var server = document.querySelector('#worker-server').value.trim()
+        document.querySelector('#connect-info').innerHTML = "<b>worker启动</b>"
+        worker = new Worker(url, server);
+        worker.onmessage = function(event) {
+            current = Date.now();
+            console.log("current - start : " + (current - start) );
+            insertMsg(event.data);
+        }
+    }
+
+    function insertMsg(txt) {
+        var con = document.querySelector('#connect-info');
+        var newtxt = "<div/>" + txt + "</div>" + con.innerHTML;
+        con.innerHTML = newtxt;
     }
 
     function appendMsg(txt) {
-      var elem = document.createElement('p');
-      elem.innerText = txt;
-      document.querySelector('#connect-info').appendChild(elem);
+        var elem = document.createElement('p');
+        elem.innerText = txt;
+        document.querySelector('#connect-info').appendChild(elem);
     }
 
     function post() {
-      var msg = document.querySelector('#connect-post').value;
-      if(msg && worker) {
-        worker.postMessage(msg);
-      }
+        var msg = document.querySelector('#connect-post').value;
+        if (msg && worker) {
+            start = Date.now();
+            console.log("start: " + start);
+            worker.postMessage(msg);
+        }
     }
 
     function terminate() {
-      if(worker) {
-        worker.terminate();
-        document.querySelector('#connect-info').innerHTML="<b>已停止worker</b>";
-      }
+        if (worker) {
+            worker.terminate();
+            document.querySelector('#connect-info').innerHTML = "<b>已停止worker</b>";
+        }
     }
 
-    window.onload = function(){
+    window.onload = function() {
         var WorkerUrl = request("url");
         var ServerUrl = request("ws");
-
-        document.querySelector('#connect-url').value = WorkerUrl;
-        document.querySelector('#worker-server').value = ServerUrl;
+        if(WorkerUrl) document.querySelector('#connect-url').value = WorkerUrl;
+       if(ServerUrl) document.querySelector('#worker-server').value = ServerUrl;
     }
-
-	</script>
+    </script>
 </body>
+
 </html>

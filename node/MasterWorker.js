@@ -17,6 +17,9 @@ var ServerWorker = function(file, websocket) {
     /*post Message*/
     postMessage: function(msg) {
       console.log('[' + websocket.id + '] C->S: ' + msg);
+      //向worker发送指令时间
+      worker.postMessageDate = Date.now();
+      console.log('[' + websocket.id + '] Server worker.postMessageDate: ' + worker.postMessageDate);
       return worker.postMessage(msg);
     },
     /*关闭*/
@@ -37,19 +40,27 @@ var ServerWorker = function(file, websocket) {
 
   worker.onmessage = function(ent) {
     console.log('[' + websocket.id + '] S->C: ' + ent.data);
+    console.log('[' + websocket.id + '] Server worker.postMessageDate: ' + this.postMessageDate);
+    //执行结束时间
+    this.onMessageDate = Date.now();
+    console.log('[' + websocket.id + '] Server worker.onMessageDate: ' + this.onMessageDate);
+    console.log('[' + websocket.id + '] Server worker runtime : ' + (this.onMessageDate - this.postMessageDate));
+
     websocket.post(2, ent.data);
   };
   return sWorker;
 }; //ServerWorker
 
-var Master = function(port) {
-
+var Master = function(port,host) {
+  port=port||8888;
+  host=host||'::';
   this.startTime = new Date(); //记录启动时间
   console.log(this.startTime.toString() + "\nStart Server at, wait for connection!");
 
   //开启web socket server
   this.wss = new WebSocketServer({
-    'port': port
+    'port': port,
+    'host':host
   });
 
   //收到链接之后
