@@ -42,14 +42,16 @@ var ServerWorker = function(file, websocket) {
   return sWorker;
 }; //ServerWorker
 
-var Master = function(port) {
-
+var Master = function(port,host) {
+  port=port||8888;
+  host=host||'::';
   this.startTime = new Date(); //记录启动时间
   console.log(this.startTime.toString() + "\nStart Server at, wait for connection!");
 
   //开启web socket server
   this.wss = new WebSocketServer({
-    'port': port
+    'port': port,
+    'host':host
   });
 
   //收到链接之后

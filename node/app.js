@@ -1,2 +1,2 @@
 var server=require('./MasterWorker.js')
-server(8888);
+server(8888,'::');
