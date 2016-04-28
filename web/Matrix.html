@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta charset="UTF-8">
+  <title>矩阵乘法</title>
+</head>
+<body>
+    <script src="offworker.js"></script>
+  <script type="text/javascript">
+var m_worker= new Worker('./test/matrix_mul.js','ws:server.newfuture.cc:8888');
+var start ,current;
+
+m_worker.onmessage=function(event)
+{
+  console.log(event.data);
+  document.write(event.data);
+  current=Date.now();
+  var resTime = current - start;
+  document.write('<br/>'+resTime);
+}
+
+var N=1000;
+var MatrixA=new Array();
+var MatrixB =new Array();
+
+for (var i = 0; i < N; i++) {
+  MatrixA[i]=new Array();
+  for (var j = 0; j < N; j++) {
+    MatrixA[i][j]=Math.ceil(Math.random()*100);
+  }
+}
+for (var i = 0; i < N; i++) {
+  MatrixB[i]=new Array();
+  for (var j = 0; j < N; j++) {
+    MatrixB[i][j]=Math.ceil(Math.random()*100);
+  }
+}
+
+var data=[MatrixA,MatrixB];
+start= Date.now();
+m_worker.postMessage(data);
+
+  </script></body>
+</html>

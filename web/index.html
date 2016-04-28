@@ -97,9 +97,8 @@
     window.onload = function() {
         var WorkerUrl = request("url");
         var ServerUrl = request("ws");
-
-        document.querySelector('#connect-url').value = WorkerUrl;
-        document.querySelector('#worker-server').value = ServerUrl;
+        if(WorkerUrl) document.querySelector('#connect-url').value = WorkerUrl;
+       if(ServerUrl) document.querySelector('#worker-server').value = ServerUrl;
     }
     </script>
 </body>
