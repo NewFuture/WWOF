@@ -48,6 +48,8 @@
         return url;
     }
 
+    var _Worker = window.Worker;
+
     var offWorker = function(url, server) {
         var ws = this._ws = new WebSocket(server || offWorker.DEFAULTSERVER);
 
@@ -121,6 +123,13 @@
         }
     }
 
+    offWorker.noConflict = function() {
+      if (root === window && root.Worker === offWorker) {
+        root.Worker = _Worker;
+      }
+      return offWorker;
+    }
+
     offWorker.DEFAULTSERVER = 'ws://127.0.0.1:8888';
 
     // Some AMD build optimizers like r.js check for condition patterns like the following:
@@ -129,7 +138,7 @@
         // errors in cases where lodash is loaded by a script tag and not intended
         // as an AMD module. See http://requirejs.org/docs/errors.html#mismatch for
         // more details.
-        root.Worker = offWorker;
+        root.offWorker = root.Worker = offWorker;
 
         // Define as an anonymous module so, through path mapping, it can be
         // referenced as the "underscore" module.
@@ -141,14 +150,15 @@
     else if (freeExports && freeModule) {
         // Export for Node.js or RingoJS.
         if (moduleExports) {
-            (freeModule.exports = offWorker).Worker = offWorker;
+          freeModule.exports = offWorker;
+          freeModule.exports.offWorker  = freeModule.exports.Worker = offWorker;
         }
         // Export for Rhino with CommonJS support.
         else {
-            freeExports.Worker = offWorker;
+          freeExports.offWorker = freeExports.Worker = offWorker;
         }
     } else {
         // Export for a browser or Rhino.
-        root.Worker = offWorker;
+        root.offWorker = root.Worker = offWorker;
     }
 }.call(this));
