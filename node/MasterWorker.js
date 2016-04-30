@@ -5,21 +5,24 @@ var WebSocketServer = require('ws').Server; //websocket server
 var Worker = require('webworker-threads').Worker; //服务器上运行的worker
 var download = require('./down.js'); //下载
 
+function LOG(msg) {
+  console.log(Date.now() + msg);
+}
 //服务器端worker封装
 var ServerWorker = function(file, websocket) {
 
   websocket.worker_status = 1;
   Master.liveWorker++;
-
+  // var LOG = function(msg) {
+  //       LOG('[' + websocket.id +']'+ msg);
+  //   }
   //serverWorker接口
   var worker = new Worker(file);
   var sWorker = {
     /*post Message*/
     postMessage: function(msg) {
-      console.log('[' + websocket.id + '] C->S: ' + msg);
+      websocket.LOG('C->S: ' + msg);
       //向worker发送指令时间
-      worker.postMessageDate = Date.now();
-      console.log('[' + websocket.id + '] Server worker.postMessageDate: ' + worker.postMessageDate);
       return worker.postMessage(msg);
     },
     /*关闭*/
@@ -27,7 +30,7 @@ var ServerWorker = function(file, websocket) {
       worker.terminate();
       Master.liveWorker--;
       websocket.worker_status = -1;
-      console.log('[' + websocket.id + '] worker terminate!');
+      websocket.LOG('worker terminate!');
     }, //close
   }; //sWorker;
 
@@ -35,32 +38,26 @@ var ServerWorker = function(file, websocket) {
     Master.liveWorker--;
     websocket.post(-1, data);
     websocket.worker_status = -1;
-    console.log('[' + websocket.id + '] error');
+    websocket.LOG('error');
   };
 
   worker.onmessage = function(ent) {
-    console.log('[' + websocket.id + '] S->C: ' + ent.data);
-    console.log('[' + websocket.id + '] Server worker.postMessageDate: ' + this.postMessageDate);
-    //执行结束时间
-    this.onMessageDate = Date.now();
-    console.log('[' + websocket.id + '] Server worker.onMessageDate: ' + this.onMessageDate);
-    console.log('[' + websocket.id + '] Server worker runtime : ' + (this.onMessageDate - this.postMessageDate));
-
+    websocket.LOG('S->C: ' + ent.data);
     websocket.post(2, ent.data);
   };
   return sWorker;
 }; //ServerWorker
 
-var Master = function(port,host) {
-  port=port||8888;
-  host=host||'::';
+var Master = function(port, host) {
+  port = port || 8888;
+  host = host || '::';
   this.startTime = new Date(); //记录启动时间
-  console.log(this.startTime.toString() + "\nStart Server at, wait for connection!");
+  LOG(this.startTime.toString() + "\nStart Server at, wait for connection!");
 
   //开启web socket server
   this.wss = new WebSocketServer({
     'port': port,
-    'host':host
+    'host': host
   });
 
   //收到链接之后
@@ -69,6 +66,11 @@ var Master = function(port,host) {
     ws.worker = null; //服务器上运行的 worker
     ws.id = Master.counter;
     ws.worker_status = -1; //worker的状态
+
+    ws.LOG = function(msg) {
+      LOG('[' + ws.id + ']' + String(msg).substring(0, 100));
+    }
+
     /*发送数据给客户端*/
     ws.post = function(code, msg) {
       ws.send(JSON.stringify({
@@ -77,8 +79,8 @@ var Master = function(port,host) {
       }));
     };
 
-    console.log('\n[' + ws.id + '] connection from ' + ws.upgradeReq.headers.origin);
-    console.log(ws.upgradeReq.headers['user-agent']);
+    ws.LOG(ws.upgradeReq.headers.origin);
+    ws.LOG(ws.upgradeReq.headers['user-agent']);
 
     /*响应客户端数据*/
     ws.onmessage = function(ent) {
@@ -91,7 +93,7 @@ var Master = function(port,host) {
             ws.worker.postMessage(info.data);
           } else {
             //worker未创建！
-            console.log('post without worker');
+            ws.LOG('post without worker');
             ws.post(ws.worker_status, 'worker is not available')
           }
           break;
@@ -99,7 +101,7 @@ var Master = function(port,host) {
         case 1: //创建worker
           url = info.data; //文件地址
           ws.worker_status = 0;
-          console.log('[' + ws.id + ']worker create :' + url);
+          ws.LOG('worker create :' + url);
 
           download(url, function(file_name) {
             ws.worker = new ServerWorker(file_name, ws);
@@ -120,7 +122,7 @@ var Master = function(port,host) {
       if (ws.worker_status > 0) {
         ws.worker.close(); //关闭worker
       }
-      console.log('web socket is closed\n');
+      ws.LOG('web socket is closed\n');
     });
   });
   return this;
