@@ -1,6 +1,6 @@
 var TIMES = 4;
 var WORKER_URL = './test/matrix_mul.js';
-var OFFLOAD_SERVER = 'ws:server.newfuture.cc:8888';
+var OFFLOAD_SERVER = 'ws://server.newfuture.cc:8888';
 
 var M = 500;
 var MatrixA = new Array();
@@ -19,7 +19,7 @@ for (var i = 0; i < M; i++) {
 }
 var data = [MatrixA, MatrixB];
 
-document.write('<table border="1"><tr><th>NO</th><th>Start Time</th><th>Finish Time</th><th>Result</th><th>Use Time</th></tr>');
+document.write('<table border="1"><tr><th>NO.</th><th>StartTime</th><th>FinishTime</th><th>Result</th><th>UseTime</th></tr>');
 // var startTime = Date.now();
 for (var i = 0; i < TIMES; i++) {
   var test_worker = new Worker(WORKER_URL, OFFLOAD_SERVER);
@@ -29,10 +29,10 @@ for (var i = 0; i < TIMES; i++) {
     var current = Date.now();
     var resTime = current - this.startTime;
     var tds = document.getElementById('t_' + this.id).childNodes;
-    tds[2].innerText = current;
-    tds[3].innerText = event.data;
-    tds[4].innerText = resTime;
-    // tds[5].innerText = current - startTime;
+    tds[2].innerHTML = current;
+    tds[3].innerHTML = event.data;
+    tds[4].innerHTML = resTime;
+    // tds[5].innerHTML = current - startTime;
     this.terminate();
   }
   test_worker.startTime = Date.now();
