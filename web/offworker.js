@@ -94,7 +94,7 @@
       } else {
         this.onerror(event);
       }
-    }
+    }.bind(this);
   }
 
   offWorker.prototype.postMessage = function(value) {
