@@ -1,16 +1,15 @@
 {
   "name": "webworker-offloading",
   "version": "0.0.1",
-  "description": "offlod webworker from browser to server",
+  "description": "offload webworker from browser to server",
   "main": "app.js",
   "dependencies": {
-    "ws": "~0.8.1",
-    "webworker-threads": "~0.6.2"
+    "ws": "~0.8.1"
   },
   "devDependencies": {},
   "scripts": {
-    "w": "supervisor -i download app.js",
-    "backgroud": "nohup supervisor -i download app.js> log.txt 2>&1 &"
+    "w": "supervisor -pid SUPERVISOR_PID -i download app.js",
+    "backgroud": "nohup supervisor -pid SUPERVISOR_PID -i download app.js> log.txt 2>&1 &"
   },
   "repository": {
     "type": "git",
@@ -20,7 +19,7 @@
     "webworker",
     "offloading"
   ],
-  "author": "NewFuture Xu-Haocong Zhao-Wenjian",
+  "author": "New Future, Xu Haocong, Zhao Wenjian",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/NewFuture/WorkerOffloading/issues"
