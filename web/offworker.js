@@ -127,7 +127,7 @@
     }
     if (!this.isReady) {
       setTimeout(function() {
-        this.close();
+        this.terminate();
       }.bind(this));
     } else {
       this.postMessage();

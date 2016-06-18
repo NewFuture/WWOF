@@ -30,3 +30,4 @@ node_modules
 # Idea
 .idea
 web/web.config
+sftp-config.json
