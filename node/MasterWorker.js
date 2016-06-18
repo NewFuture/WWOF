@@ -1,9 +1,12 @@
 // worker 管理分配模块
 // for example
 // require('MasterWorker.js')(8888);
+//  remove ready_callback;
+
 var WebSocketServer = require('ws').Server; //websocket server
-var Worker = require('webworker-threads').Worker; //服务器上运行的worker
-var download = require('./down.js'); //下载
+// var Worker = require('webworker-threads').Worker; //服务器上运行的worker
+// var Worker = require('tiny-worker'); //服务器上运行的worker
+var Worker =require('./worker/webworker.js');
 
 function LOG(msg) {
   console.log(Date.now() + msg);
@@ -17,7 +20,8 @@ var ServerWorker = function(file, websocket) {
   //       LOG('[' + websocket.id +']'+ msg);
   //   }
   //serverWorker接口
-  var worker = new Worker(file);
+  var worker = new Worker(file,function(){websocket.post(1,'ready')});
+  // websocket.LOG('thread_id:' + worker.thread.id);
   var sWorker = {
     /*post Message*/
     postMessage: function(msg) {
@@ -52,7 +56,7 @@ var Master = function(port, host) {
   port = port || 8888;
   host = host || '::';
   this.startTime = new Date(); //记录启动时间
-  LOG(this.startTime.toString() + "\nStart Server at, wait for connection!");
+  LOG(this.startTime.toString() + "\nStart Server at {" + host + port + "}, wait for connection!");
 
   //开启web socket server
   this.wss = new WebSocketServer({
@@ -102,11 +106,11 @@ var Master = function(port, host) {
           url = info.data; //文件地址
           ws.worker_status = 0;
           ws.LOG('worker create :' + url);
-
-          download(url, function(file_name) {
-            ws.worker = new ServerWorker(file_name, ws);
-            ws.post(1, 'ready');
-          });
+          ws.worker = new ServerWorker(url, ws);
+          // download(url, function(file_name) {
+          //   ws.worker = new ServerWorker(file_name, ws);
+          //   ws.post(1, 'ready');
+          // });
           break;
 
         case -1: //关闭worker
