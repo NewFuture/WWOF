@@ -4,7 +4,6 @@
  * 矩阵原型
  */
 function Matrix(data) {
-  // 这里必须传一个二维数组，最好严格检验一下
   if (typeof data !== "object" || typeof data.length === "undefined" || !data) {
     throw new Error("data's type is error");
   }
@@ -36,7 +35,7 @@ var M = {
       result[i] = [];
       for (var j = 0, jLen = mRow.length; j < jLen; j++) {
         var resultRowCol = 0;
-        // 如果n矩阵没有足够的列数相乘，转入m矩阵下一行
+
         if (typeof this.findByLocation(nData, 0, j) === "undefined") {
           break;
         }
@@ -86,22 +85,33 @@ function determinant(e) {
       return s;
   };
 };
-function sum(r)
-{
-  s=0;
+
+function sum(r) {
+  // console.log(r);
+  var s = 0;
   for (var i = 0; i < r.length; i++) {
     for (var j = 0; j < r[i].length; j++) {
-     s+=r[i][j];
+      s += r[i][j];
     }
   }
   return s;
 }
 onmessage = function(event) {
-  // console.log(event.data);
-  var m = new Matrix(event.data[0]);
-  var n = new Matrix(event.data[1]);
-  var r = M.multiply(m, n);
-  // var det = determinant(r);
-  var s=sum(r);
+
+  // console.log(event.data[0]);
+  var r = event.data[0];
+  var m = new Matrix(r);
+  var times = event.data[1] || 1;
+  while (times-- > 1) {
+    r = M.multiply(new Matrix(r), m);
+  }
+
+  var s = sum(r);
   postMessage(s);
+
+  // var m = new Matrix(event.data);
+  // var n = new Matrix(event.data);
+  // var r = M.multiply(m, n);
+  // var det = determinant(r);
+  // postMessage(r);
 };

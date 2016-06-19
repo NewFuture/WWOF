@@ -42,7 +42,7 @@ var ServerWorker = function(file, websocket) {
     Master.liveWorker--;
     websocket.post(-1, data);
     websocket.worker_status = -1;
-    websocket.LOG('error');
+    websocket.LOG('[error] '+data);
   };
 
   worker.onmessage = function(ent) {

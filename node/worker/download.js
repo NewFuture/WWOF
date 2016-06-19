@@ -10,12 +10,14 @@ const http = require('http');
 
 var download = function(url, callback) {
     http.get(url, (res) => {
+            var data = "";
             res.on('data', (chunk) => {
-                    callback(chunk.toString());
-                })
-                .on('error', (e) => {
-                    console.log(`[download] read error: ${e.message}`);
-                });
+                data += chunk;
+            }).on('end', () => {
+                callback(data);
+            }).on('error', (e) => {
+                console.log(`[download] read error: ${e.message}`);
+            });
         })
         .on('error', (e) => {
             console.log(`[download] error: ${e.message}`);
