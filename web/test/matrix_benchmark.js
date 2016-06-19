@@ -1,8 +1,9 @@
-var TIMES = 4;
+var TIMES = 8;
 var WORKER_URL = './test/matrix_mul.js';
-var OFFLOAD_SERVER = 'ws://server.newfuture.cc:8888';
+var OFFLOAD_SERVER = 'ws://536.mobisys.cc:8888';
 
-var M = 500;
+var M = 200;
+var N = 10;
 var MatrixA = new Array();
 var MatrixB = new Array();
 for (var i = 0; i < M; i++) {
@@ -11,13 +12,13 @@ for (var i = 0; i < M; i++) {
     MatrixA[i][j] = i * M + j;
   }
 }
-for (var i = 0; i < M; i++) {
-  MatrixB[i] = new Array();
-  for (var j = 0; j < M; j++) {
-    MatrixB[i][j] = j * M + i;
-  }
-}
-var data = [MatrixA, MatrixB];
+// for (var i = 0; i < M; i++) {
+//   MatrixB[i] = new Array();
+//   for (var j = 0; j < M; j++) {
+//     MatrixB[i][j] = j * M + i;
+//   }
+// }
+var data = [MatrixA, N];
 
 document.write('<table border="1"><tr><th>NO.</th><th>StartTime</th><th>FinishTime</th><th>Result</th><th>UseTime</th></tr>');
 // var startTime = Date.now();
