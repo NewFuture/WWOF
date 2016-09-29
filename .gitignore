@@ -31,3 +31,7 @@ node_modules
 .idea
 web/web.config
 sftp-config.json
+
+node_modules/
+SUPERVISOR_PID
+log.txt

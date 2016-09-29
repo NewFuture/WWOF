@@ -9,7 +9,7 @@
   "devDependencies": {},
   "scripts": {
     "w": "supervisor -pid SUPERVISOR_PID -i download app.js",
-    "backgroud": "nohup supervisor -pid SUPERVISOR_PID -i download app.js> log.txt 2>&1 &"
+    "backgroud": "nohup supervisor -pid SUPERVISOR.pid -i download app.js> log.txt 2>&1 &"
   },
   "repository": {
     "type": "git",
