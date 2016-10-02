@@ -1,0 +1,129 @@
+html{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+body {
+    width: 100%;
+    font-size: 18px;
+    line-height: 1.45;
+    font-weight: 400;
+    letter-spacing: normal;
+    background-color: #fff;
+    color: #333;
+    font-style: normal;
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Myriad Set Pro', 'Helvetica Neue', '微软雅黑',Helvetica, Arial, sans-serif;
+}
+
+.con-label{
+    width: 20%;
+}
+#connect-info {
+  margin: 10px 0;
+  min-height: 9em;
+  background-color:#f2f2f2;
+}
+#create-conn {
+    border-radius: 20px;
+    padding: 10px;
+}
+#create-conn:hover {
+    border: solid 1px #56b4ef;
+
+}
+#postMsg {
+    border-radius: 20px;
+    padding: 10px;
+}
+#postMsg:hover {
+    border: solid 1px #56b4ef;
+
+}
+input[type=text],input[type=password]{
+    margin-left: 20px;
+    border-color:#bbb;
+    height:38px;
+    font-size:14px;
+    border-radius:2px;
+    outline:0;
+    border:#ccc 1px solid;
+    padding:0 10px;
+    width: 80%;
+    -webkit-transition:box-shadow .5s;
+    margin-bottom:15px;
+    border: none;
+    border-radius: 10px;
+    outline: 0;
+    color: #7c8a96;
+    background-color: #f6f9f9;
+    -webkit-appearance: none;
+}
+input[type=text]:hover,input[type=text]:focus,input[type=password]:hover,input[type=password]:focus{
+    border:1px solid #56b4ef;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.05),0 0 8px rgba(82,168,236,.6);
+    -webkit-transition:box-shadow .5s;
+}
+input::-webkit-input-placeholder{
+    color:#999;
+    -webkit-transition:color .5s;
+}
+input:focus::-webkit-input-placeholder,input:hover::-webkit-input-placeholder{
+    color:#c2c2c2;
+    -webkit-transition:color .5s;
+}
+
+#nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 9999;
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 48px;
+    max-height: 44px;
+    background: #333;
+    font-size: 20px;
+    color: #fff;
+    overflow-x: hidden;
+}
+.title {
+    position: relative;
+    margin: 5px;
+    left: 10%;
+    font-size: 1em;
+}
+
+#content {
+    position: relative;
+    margin: 0 auto;
+    max-width: 85%;
+    margin-top: 68px;
+    background-color: #fff;
+}
+#worker-conn {
+    position: relative;
+    margin: 0 auto;
+    max-width: 77%;
+}
+.btn {
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    margin: 0;
+}
+.btn {
+    position: relative;
+    padding: 10px 25px;
+    border: 2px solid transparent;
+    border-radius: 20px 20px;
+    white-space: nowrap;
+    font: normal 16px/16px "AvenirLTStd-Heavy",'微软雅黑', Helvetica,Arial,sans-serif;
+    color: #fff;
+    background-color: rgb(16, 230, 220);
+    border-color: rgb(16, 230, 220);
+}

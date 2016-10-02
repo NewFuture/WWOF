@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Worker Offloading Debug</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <div id="nav">
+        <h1 class="title">Worker Offloading Debug</h1>
+    </div>
+    <div id="content">
+        <div id="create-conn">
+            <div>
+                <label class="con-label">Worker URL</label>
+                <input type="text" id="connect-url" placeholder="worker url" value="./test/repeat.js">
+            </div>
+            <div>
+              <label class="con-label">Offload URl</label>
+                <input disabled type="text" placeholder="offload server url like [offload-server.mobisys.cc:8888]" id="worker-server" value="">
+            </div>
+            <button id="btn-create" onclick="connect()" class="btn btn-round-fill sunglow">start</button>
+            <button id="btn-close" onclick="terminate()" class="btn">stop</button>
+        </div>
+        <div id="postMsg">
+            <h4>Post Message to the  offloading worker</h4>
+            <input type="text" id="connect-post" placeholder="post message to remote server" value="message">
+            <button id="post" onclick="post()" class="btn">postMessage</button>
+        </div>
+        <h4>Response Data</h4>
+        <div id="connect-info">
+        </div>
+    </div>
+    <script src="js/load.js"></script>
+    <script id="offworker"></script>    
+    <script>
+    var worker = {};
+    var start, current;
+    function connect() {
+        var url = document.querySelector('#connect-url').value.trim();
+        var server = document.querySelector('#worker-server').value.trim()
+        document.querySelector('#connect-info').innerHTML = "<b>worker启动</b>"
+        worker = new Worker('ws://'+url, server);
+        worker.onmessage = function(event) {
+            current = Date.now();
+            console.log("current - start : " + (current - start) );
+            insertMsg(event.data);
+        }
+    }
+
+    function insertMsg(txt) {
+        var con = document.querySelector('#connect-info');
+        var newtxt = "<div/>" + txt + "</div>" + con.innerHTML;
+        con.innerHTML = newtxt;
+    }
+
+    function appendMsg(txt) {
+        var elem = document.createElement('p');
+        elem.innerText = txt;
+        document.querySelector('#connect-info').appendChild(elem);
+    }
+
+    function post() {
+        var msg = document.querySelector('#connect-post').value;
+        if (msg && worker) {
+            start = Date.now();
+            console.log("start: " + start);
+            worker.postMessage(msg);
+        }
+    }
+
+    function terminate() {
+        if (worker) {
+            worker.terminate();
+            document.querySelector('#connect-info').innerHTML = "<b>已停止worker</b>";
+        }
+    }
+    </script>
+</body>
+
+</html>
