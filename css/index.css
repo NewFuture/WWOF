@@ -25,6 +25,11 @@ body {
   min-height: 9em;
   background-color:#f2f2f2;
 }
+.timestamp{
+    padding: 1em;
+    font-size: .5em;
+    color: #a79797;
+}
 #create-conn {
     border-radius: 20px;
     padding: 10px;

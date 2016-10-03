@@ -42,11 +42,11 @@
         var url = document.querySelector('#connect-url').value.trim();
         var server = document.querySelector('#worker-server').value.trim()
         document.querySelector('#connect-info').innerHTML = "<b>worker启动</b>"
-        worker = new Worker('ws://'+url, server);
+        worker = new Worker(url, 'ws://'+server);
         worker.onmessage = function(event) {
             current = Date.now();
             console.log("current - start : " + (current - start) );
-            insertMsg(event.data);
+            insertMsg(event.data+'<small class="timestamp">['+current+']</small>');
         }
     }
 
@@ -74,7 +74,7 @@
     function terminate() {
         if (worker) {
             worker.terminate();
-            document.querySelector('#connect-info').innerHTML = "<b>已停止worker</b>";
+            insertMsg("<b>已停止worker</b>");
         }
     }
     </script>
