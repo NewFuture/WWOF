@@ -1,3 +1,4 @@
+//log.js
 //简单log
 console.log('log worker start!');
 var log = function(data) {

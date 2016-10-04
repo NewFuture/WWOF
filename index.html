@@ -15,11 +15,11 @@
         <div id="create-conn">
             <div>
                 <label class="con-label">Worker URL</label>
-                <input type="text" id="connect-url" placeholder="worker url" value="./test/repeat.js">
+                <input type="text" id="connect-url" placeholder="worker url" value="./worker/repeat.js">
             </div>
             <div>
               <label class="con-label">Offload URl</label>
-                <input disabled type="text" placeholder="offload server url like [offload-server.mobisys.cc:8888]" id="worker-server" value="">
+                <input disabled type="text" placeholder="offload server url like [offload-server.mobisys.cc:8888]" id="offload-server" value="">
             </div>
             <button id="btn-create" onclick="connect()" class="btn btn-round-fill sunglow">start</button>
             <button id="btn-close" onclick="terminate()" class="btn">stop</button>
@@ -34,7 +34,6 @@
         </div>
     </div>
     <script src="js/load.js"></script>
-    <script id="offworker"></script>    
     <script>
     var worker = {};
     var start, current;

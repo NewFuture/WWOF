@@ -1,28 +1,41 @@
-function request (paras) {
-  var url = location.href
-  var paraString = url.substring(url.indexOf('?') + 1, url.length).split('&')
-  var paraObj = {}
-  for (i = 0; j = paraString[i]; i++) {
-    paraObj[j.substring(0, j.indexOf('=')).toLowerCase()] = j.substring(j.indexOf('=') + 1, j.length)
+/**
+ * 自动加载offworker
+ */
+'use strict'
+
+function request (key) {
+  if (undefined === request.params) {
+    request.params = {}
+    location.search.slice(1).split('&').forEach(function (s) {
+      var i = s.indexOf('=')
+      request.params[s.slice(0, i)] = s.slice(i + 1)
+    })
   }
-  var returnValue = paraObj[paras.toLowerCase()]
-  if (typeof (returnValue) == 'undefined') {
-    return ''
-  } else {
-    return returnValue
-  }
+  return request.params[key] // hasOwnProperty
 }
 
-function init (url) {
-  document.querySelector('#offworker').src = "http://"+ url
+function addScript (url) {
+  var script = document.querySelector('#offworker-script')
+  if (!script) {
+    script = document.createElement('script')
+    script.id = 'offworker-script'
+    document.getElementsByTagName('head')[0].appendChild(script)
+  }
+  script.src = 'http://' + url
 }
 
 window.onload = function () {
-  var WorkerUrl = request('url')
   var ServerUrl = request('ws')
-  if (WorkerUrl) document.querySelector('#connect-url').value = WorkerUrl
   if (ServerUrl) {
-    init(ServerUrl)
-    document.querySelector('#worker-server').value = ServerUrl
+    addScript(ServerUrl)
+    var s = document.querySelector('#offload-server')
+    if (s) {
+      s.value = ServerUrl
+    }
+  }
+  var WorkerUrl = request('url')
+  if (WorkerUrl) {
+    var connect = document.querySelector('#connect-url')
+    if (connect) { connect.value = WorkerUrl }
   }
 }
