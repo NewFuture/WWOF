@@ -39,3 +39,5 @@ window.onload = function () {
     if (connect) { connect.value = WorkerUrl }
   }
 }
+this.offloadserver = request('ws')
+if (this.offloadserver) addScript(offloadserver)
