@@ -1,20 +1,21 @@
 {
   "name": "wwof",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "offload webworker from browser to server",
-  "homepage":"https://newfuture.github.io/WWOF/",
+  "homepage": "https://newfuture.github.io/WWOF/",
   "main": "app.js",
   "dependencies": {
-    "ws": "~0.8.1"
+    "ws": ">=0.8.1"
   },
   "devDependencies": {},
   "scripts": {
     "w": "supervisor -pid supervisor.pid -i download node app.js",
-    "backgroud": "nohup supervisor -pid supervisor.pid -i download app.js> log.txt 2>&1 &"
+    "backgroud": "nohup supervisor -pid supervisor.pid -i download app.js> log.txt 2>&1 &",
+    "stop": "kill `cat supervisor.pid`"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/NewFuture/WWOF.git"
+    "url": "git+https://github.com/NewFuture/WWOF.git#server"
   },
   "keywords": [
     "webworker",
