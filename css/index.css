@@ -99,10 +99,19 @@ input:focus::-webkit-input-placeholder,input:hover::-webkit-input-placeholder{
 .title {
     position: relative;
     margin: 5px;
-    left: 10%;
+    /* left: 10%; */
     font-size: 1em;
 }
-
+.menu{
+    float: right;
+    right: 2px;
+    margin-right: 1em;
+}
+.link{margin: auto;margin: .1em;}
+.link a{
+    color: #fff;
+    cursor: pointer;
+}
 #content {
     position: relative;
     margin: 0 auto;

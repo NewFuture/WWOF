@@ -9,7 +9,11 @@
 
 <body>
     <div id="nav">
-        <h1 class="title">Worker Offloading Debug</h1>
+        <span class="title">WWOF Debug</span>
+        <span class="menu">
+        <span class="link"><a href="speed.html">Speed</a></span>
+        <span class="link"><a href="matrix.html">Matrix</a></span>
+        </span>       
     </div>
     <div id="content">
         <div id="create-conn">
@@ -39,7 +43,7 @@
     var start, current;
     function connect() {
         var url = document.querySelector('#connect-url').value.trim();
-        var server = document.querySelector('#worker-server').value.trim()
+        var server = document.querySelector('#offload-server').value.trim()
         document.querySelector('#connect-info').innerHTML = "<b>worker启动</b>"
         worker = new Worker(url, 'ws://'+server);
         worker.onmessage = function(event) {
