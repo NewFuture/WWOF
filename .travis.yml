@@ -19,11 +19,19 @@ before_script:
 
 # 自动update submodule
 script:
-  - git clone --depth=1 -b $GIT_BRANCH $GIT_URL _deploy_path 
-    && cd _deploy_path
-    && git submodule update --recursive --init --remote
-    && git commit -am "`$EMOJI`Auto update Submodule [skip ci]"
-    && git push -f "${GIT_URL}" $GIT_BRANCH:$GIT_BRANCH
+  - git clone -b $GIT_BRANCH $GIT_URL _deploy_path 
+      && cd _deploy_path
+      && git submodule update --recursive --init --remote
+      && git commit -am "`$EMOJI`Auto update Submodule [skip ci]"
+      && git push -f "${GIT_URL}" $GIT_BRANCH:$GIT_BRANCH
+
+# 自动跟新master submodules
+after_success:
+    - git checkout master
+        && git submodule update --recursive --init --remote
+        && git commit -am "`$EMOJI`Auto update ${GIT_BRANCH} [skip ci]"
+        && git push -f "${GIT_URL}" master:master
+
 
 branches:
   only:
