@@ -1,0 +1,8 @@
+[submodule "node"]
+	path = node
+	url = https://github.com/NewFuture/WWOF.git
+	branch = server
+[submodule "wwof-test"]
+	path = web
+	url = https://github.com/NewFuture/WWOF.git
+	branch = test
