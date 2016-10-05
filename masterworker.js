@@ -96,7 +96,7 @@ var Master = function (server) {
           break
 
         case 1: // 创建worker
-          let url = info.data; // 文件地址
+          var url = info.data; // 文件地址
           ws.worker_status = 0
           ws.LOG('worker create :' + url)
           ws.worker = new ServerWorker(url, ws)
