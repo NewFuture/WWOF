@@ -31,6 +31,7 @@ window.onload = function () {
     var s = document.querySelector('#offload-server')
     if (s) {
       s.value = ServerUrl
+      s.innerHTML=ServerUrl
     }
   }
   var WorkerUrl = request('url')

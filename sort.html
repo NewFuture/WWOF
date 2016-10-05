@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Worker Offloading Debug-sort</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <link rel="stylesheet" href="css/index.css">
+    <style>
+    #showData {
+        width: 700px;
+        padding: 0;
+        margin: 0;
+    }
+    
+    caption {
+        padding: 0 0 5px 0;
+        width: 700px;
+        font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+        text-align: right;
+    }
+    
+    th {
+        font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+        color: #4f6b72;
+        border-right: 1px solid #C1DAD7;
+        border-bottom: 1px solid #C1DAD7;
+        border-top: 1px solid #C1DAD7;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        text-align: left;
+        padding: 6px 6px 6px 12px;
+        /*background: #CAE8EA url(images/bg_header.jpg) no-repeat;*/
+    }
+    
+    th.nobg {
+        border-top: 0;
+        border-left: 0;
+        border-right: 1px solid #C1DAD7;
+        background: none;
+    }
+    
+    td {
+        border-right: 1px solid #C1DAD7;
+        border-bottom: 1px solid #C1DAD7;
+        background: #fff;
+        font-size: 11px;
+        padding: 6px 6px 6px 12px;
+        color: #4f6b72;
+    }
+    
+    td.alt {
+        background: #F5FAFA;
+        color: #797268;
+    }
+    
+    th.spec {
+        border-left: 1px solid #C1DAD7;
+        border-top: 0;
+        background: #fff url(images/bullet1.gif) no-repeat;
+        font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+    }
+    
+    th.specalt {
+        border-left: 1px solid #C1DAD7;
+        border-top: 0;
+        background: #f5fafa url(images/bullet2.gif) no-repeat;
+        font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+        color: #797268;
+    }
+    </style>
+</head>
+<script type="text/javascript" src="js/load.js"></script>
+<body>
+    <div id="nav">
+        <div class="title">Worker Offloading Debug</div>
+    </div>
+    <div id="content">
+        <div id="create-conn">
+            <div>
+                Worker URL
+                <input type="text" id="connect-url" placeholder="worker url" value="./worker/bubblesort.js">
+            </div>
+            <div>
+                Offload Server:
+                <span id="offload-server">None (using local worker)</span>
+            </div>
+
+        </div>
+        <div id="postMsg">
+            <h4>Post Message to the  offloading worker</h4>
+            <input type="text" id="connect-post" placeholder="post message to remote server" value="100">
+            <button id="post" onclick="post()" class="btn">开始</button>
+            <button id="btn-close" onclick="terminate()" class="btn">关闭</button>
+        </div>
+        <h4>响应数据</h4>
+        <table id="showData">
+            <thead>
+                <tr>
+                    <th>input</th>
+                    <th>result</th>
+                    <th>resTime</th>
+                    <th>runTime</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <script>
+    var worker = {};
+    var tbody = document.getElementsByTagName("tbody")[0];
+    var showData = document.getElementById("showData");
+    var start, current, resTime;
+    var bub = 5000,
+        cnt = 0;
+    //test html
+    function init() {
+        var url = document.querySelector('#connect-url').value.trim();
+        // document.querySelector('#connect-info').innerHTML = "<b>worker start!</b>"
+        worker = new Worker(url);
+
+        worker.onmessage = function(event) {
+            current = Date.now();
+            resTime = current - start;
+            insertTable(event.data);
+
+            if (bub <= 100000) {
+                if (cnt < 4) {
+                    setTimeout(function() {
+                        start = Date.now();
+                        worker.postMessage(bub);
+                    }, 3000);
+                    cnt++;
+                } else {
+                    bub += 5000;
+                    cnt = 0;
+                    setTimeout(function() {
+                        start = Date.now();
+                        worker.postMessage(bub);
+                    }, 3000);
+                }
+            }
+        }
+    }
+
+    function post() {
+        init();
+        var msg = document.querySelector('#connect-post').value;
+        if (msg && worker) {
+            start = Date.now();
+            worker.postMessage(msg);
+        }
+    }
+
+    function insertMsg(txt) {
+        var con = document.querySelector('#connect-info');
+        var newtxt = "<div/>" + txt + "</div>" + con.innerHTML;
+        con.innerHTML = newtxt;
+    }
+
+    function insertTable(txt) {
+        var data = txt.split(",");
+        var tr = document.createElement('tr');
+        var td1 = document.createElement('td');
+        var td2 = document.createElement('td');
+        var td3 = document.createElement('td');
+        var td4 = document.createElement('td');
+
+        td1.appendChild(document.createTextNode(data[1]));
+        td2.appendChild(document.createTextNode(data[3]));
+        td3.appendChild(document.createTextNode(resTime));
+        td4.appendChild(document.createTextNode(data[5]));
+
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+        tr.appendChild(td4);
+
+        //tbody.appendChild(tr);
+        showData.appendChild(tr);
+    }
+
+    function appendMsg(txt) {
+        var elem = document.createElement('p');
+        elem.innerText = txt;
+        document.querySelector('#connect-info').appendChild(elem);
+    }
+
+    function terminate() {
+        if (worker) {
+            worker.terminate();
+            // document.querySelector('#connect-info').innerHTML = "<b>已停止worker</b>";
+        }
+    }
+    </script>
+</body>
+
+</html>
