@@ -1,7 +1,7 @@
 //JUST AN EXAMPLE, PLEASE USE YOUR OWN PICTURE!
 //http://stackoverflow.com/questions/5529718/how-to-detect-internet-speed-in-javascript
-var imageAddr = "img/wwo.bmp"; 
-var downloadSize = 4995374; //bytes
+var imageAddr = "img/wwo.bmp?"+Date.now()+Math.random(); 
+var downloadSize = 3145782; //bytes
 
 function ShowProgressMessage(msg) {
     if (console) {

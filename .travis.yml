@@ -1,0 +1,35 @@
+language: generic
+
+branches:
+  only:
+    - server
+    - test
+    # - /^[vV](\d+\.){1,3}\d+/
+
+addons:
+  ssh_known_hosts:
+    - github.com
+
+env:
+ global:
+  - GH_REF: "NewFuture/WWOF.git"
+  - GIT_URL: "git@github.com:${GH_REF}"
+  - BRANCH: "gh-pages"
+  - NAME: "From-Travis-CI"
+  - EMAIL: "github@newfuture.cc"
+  - EMOJI: "'eval curl -sL https://newfuture.github.io/emoji/e.sh|bash'"
+
+# 配置git环境
+before_script:
+  - base64 -d <<< $ID_RSA > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+  - git config --global user.name $NAME
+  - git config --global user.email $EMAIL
+
+# 自动update submodule
+script:
+  - git clone -b $BRANCH $GIT_URL _deploy_path 
+    && cd _deploy_path
+    && git submodule update --init --recursive
+    && git submodule foreach --recursive git pull origin $TRAVIS_BRANCH
+    && git commit -am "`$EMOJI` Auto update Submodule"
+    && git push "${GIT_URL}" $BRANCH:$BRANCH
