@@ -17,7 +17,9 @@ env:
         - HOST: "127.0.0.1:$PORT"
 
 
-install: npm install
+install: 
+    - npm install -g supervisor
+    - npm install
 
 # 配置git环境
 before_script:
@@ -27,8 +29,11 @@ before_script:
 # 自动update submodule
 script:
     - ./app.js $PORT & 
+    - npm run bg
+    - sleep 3
     - curl -i -H "Connection:Upgrade" -H "Upgrade:websocket" -H "Sec-WebSocket-Key:d3dvZg==" -H "Sec-WebSocket-Version:13" $HOST &
-    - curl $HOST
+    - curl -sS $HOST | grep "ws:"    
+    - curl -sS localhost:8888 | grep "ws:"
 
 after_success:
     - git clone --depth=1 -b $GIT_BRANCH $GIT_URL _deploy_path 
